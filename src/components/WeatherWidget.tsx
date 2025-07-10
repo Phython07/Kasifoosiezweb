@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { Cloud, Sun, CloudRain, Wind, Thermometer, Droplets, Eye, Gauge, CloudSnow, Zap, MapPin, ChevronDown, Search, Mountain, Trees, Building, Home, Factory, Waves, AlertCircle, RefreshCw } from 'lucide-react';
 
@@ -28,8 +29,12 @@ interface Location {
 
 // OpenWeatherMap API configuration
 // Environment variables (make sure these are set correctly in your .env file)
-const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY || 'YOUR_API_KEY_HERE';
-const WEATHER_BASE_URL = import.meta.env.VITE_WEATHER_BASE_URL || 'https://api.openweathermap.org/data/2.5/weather';
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+
+const BASE_URL = import.meta.env.VITE_WEATHER_BASE_URL;
+
+
+
 
 // Geolocation configuration
 const GEOLOCATION_OPTIONS = {
@@ -181,14 +186,14 @@ export default function WeatherWidget() {
         const warmWeatherFoods = [
           'Warm weather - perfect for tshikonelo (traditional stew) and pap! 🍲🌽',
           'Great day for mukumbani (traditional vegetables) with samp! 🥬🫘',
-          'Perfect for tshiawelo (traditional porridge) and morogo! 🥣🥬',
-          'Ideal weather for traditional pap en wors with magwanda! 🌭🥛'
+          'Perfect for Mutuku (traditional porridge) and morogo! 🥣🥬',
+          'Ideal weather for traditional pap with magwanda! 🌭🥛'
         ];
         return warmWeatherFoods[Math.floor(Math.random() * warmWeatherFoods.length)];
       } else {
         const coolWeatherFoods = [
           'Cool weather - perfect for warm magwanda porridge and traditional tea! ☕🥣',
-          'Great day for hot nguluvhe soup and fresh bread! 🍲🍞',
+          'Great day for hot soup and fresh bread! 🍲🍞',
           'Ideal for warm magulu stew with traditional vegetables! 🍲🥬',
           'Perfect for hot nama ya thoho with steamed pap! 🥩🌽'
         ];
@@ -234,6 +239,23 @@ export default function WeatherWidget() {
       return 'Perfect weather for any delicious meal! 🌟';
     }
   };
+  
+  const requestLocationPermission = async () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          console.log("Got position:", position.coords);
+          // Call your weather fetch here
+        },
+        error => {
+          console.error("Geolocation error:", error);
+        }
+      );
+    } else {
+      alert("Geolocation not supported.");
+    }
+  };
+  
 
   const fetchWeather = async (locationName?: string) => {
     setLoading(true);
@@ -248,9 +270,10 @@ export default function WeatherWidget() {
       }
 
       const [lat, lon] = location.coordinates;
-      const url = `${WEATHER_BASE_URL}?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`;
+      const url = `${BASE_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+
       
-      console.log('Fetching weather from:', url.replace(WEATHER_API_KEY, '[API_KEY_HIDDEN]'));
+      console.log('Fetching weather from:', url.replace(API_KEY, '[API_KEY_HIDDEN]'));
       
       const response = await fetch(url);
       
