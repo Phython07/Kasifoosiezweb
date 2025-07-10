@@ -244,8 +244,8 @@ export default function WeatherWidget() {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         position => {
-          console.log("Got position:", position.coords);
-          // Call your weather fetch here
+          const { latitude, longitude } = position.coords;
+          fetchWeather(undefined, latitude, longitude);
         },
         error => {
           console.error("Geolocation error:", error);
@@ -257,65 +257,76 @@ export default function WeatherWidget() {
   };
   
 
-  const fetchWeather = async (locationName?: string) => {
+  const fetchWeather = async (locationName?: string, lat?: number, lon?: number) => {
     setLoading(true);
     setError(null);
-    
+  
     try {
-      const targetLocation = locationName || weather.location;
-      const location = locations.find(loc => loc.name === targetLocation);
-      
-      if (!location) {
-        throw new Error('Location not found');
+      let finalLat: number;
+      let finalLon: number;
+      let targetLocation: string;
+  
+      if (lat !== undefined && lon !== undefined) {
+        finalLat = lat;
+        finalLon = lon;
+        targetLocation = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`; // fallback label
+      } else {
+        targetLocation = locationName || weather.location;
+        const location = locations.find(loc => loc.name === targetLocation);
+  
+        if (!location) {
+          throw new Error('Location not found');
+        }
+  
+        [finalLat, finalLon] = location.coordinates;
       }
-
-      const [lat, lon] = location.coordinates;
-      const url = `${BASE_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
-
-      
+  
+      const url = `${BASE_URL}?lat=${finalLat}&lon=${finalLon}&appid=${API_KEY}&units=metric`;
       console.log('Fetching weather from:', url.replace(API_KEY, '[API_KEY_HIDDEN]'));
-      
+  
       const response = await fetch(url);
-      
+  
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error('Invalid API key. Please check your OpenWeatherMap API key at https://openweathermap.org/api');
+          throw new Error('Invalid API key. Please check your OpenWeatherMap API key.');
         } else if (response.status === 404) {
           throw new Error('Location not found in weather service.');
         } else {
           throw new Error(`Weather service error: ${response.status}`);
         }
       }
-      
+  
       const data = await response.json();
       console.log('Weather data received:', data);
-      
+  
       const newWeather: WeatherData = {
         temperature: Math.round(data.main.temp),
         condition: data.weather[0].main.toLowerCase(),
         humidity: data.main.humidity,
-        windSpeed: Math.round(data.wind?.speed * 3.6) || 0, // Convert m/s to km/h
-        visibility: data.visibility ? Math.round(data.visibility / 1000) : 10, // Convert m to km
+        windSpeed: Math.round(data.wind?.speed * 3.6) || 0,
+        visibility: data.visibility ? Math.round(data.visibility / 1000) : 10,
         pressure: data.main.pressure,
-        location: targetLocation,
+        location: locationName || data.name || targetLocation,
         description: data.weather[0].description,
         feelsLike: Math.round(data.main.feels_like),
         icon: data.weather[0].icon,
         sunrise: data.sys?.sunrise,
         sunset: data.sys?.sunset,
-        recommendation: getFoodRecommendation(data.weather[0].icon, data.weather[0].description, Math.round(data.main.temp), targetLocation)
+        recommendation: getFoodRecommendation(
+          data.weather[0].icon,
+          data.weather[0].description,
+          Math.round(data.main.temp),
+          targetLocation
+        )
       };
-      
+  
       setWeather(newWeather);
       setLastUpdated(new Date());
       setShowLocationSelector(false);
-      
     } catch (error) {
       console.error('Error fetching weather:', error);
       setError(error instanceof Error ? error.message : 'Failed to fetch weather data');
-      
-      // Fallback to simulated data if API fails
-      const targetLocation = locationName || weather.location;
+  
       const fallbackWeather: WeatherData = {
         temperature: 22,
         condition: 'clear',
@@ -323,19 +334,19 @@ export default function WeatherWidget() {
         windSpeed: 10,
         visibility: 10,
         pressure: 1013,
-        location: targetLocation,
+        location: locationName || weather.location,
         description: 'clear sky (offline)',
         feelsLike: 24,
         icon: '01d',
         recommendation: 'Weather data unavailable - perfect for ordering food! 🍽️'
       };
-      
+  
       setWeather(fallbackWeather);
     } finally {
       setLoading(false);
     }
   };
-
+  
   const handleLocationChange = (location: Location) => {
     fetchWeather(location.name);
     setSearchQuery('');
