@@ -27,8 +27,9 @@ interface Location {
 }
 
 // OpenWeatherMap API configuration
-const WEATHER_API_KEY = '69b52124e53f9b1492e48b5b949522ac';
-const WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
+// Environment variables (make sure these are set correctly in your .env file)
+const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY || 'YOUR_API_KEY_HERE';
+const WEATHER_BASE_URL = import.meta.env.VITE_WEATHER_BASE_URL || 'https://api.openweathermap.org/data/2.5/weather';
 
 // Geolocation configuration
 const GEOLOCATION_OPTIONS = {
