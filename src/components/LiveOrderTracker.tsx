@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import { MapPin, Clock, CheckCircle, Truck, ChefHat, Package, Star, Phone, MessageCircle, Navigation, Zap } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';

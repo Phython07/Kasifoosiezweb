@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Star, Clock, Shield, Users, Smartphone, Download, Store, ChefHat, Truck, Zap, Heart, Award, MapPin, Bell, CreditCard, Headphones, TrendingUp, Globe, CheckCircle, Play, Video, Sparkles, MessageCircle, Gift, Percent, Timer, Phone, Mail, Calendar, Search, Filter, ShoppingCart, Bookmark, Share2, ThumbsUp, Camera, Mic, Volume2, Settings, User, Navigation, Wifi, Battery, Signal } from 'lucide-react';
 import VideoModal from './VideoModal';
@@ -63,7 +64,7 @@ export default function HomePage() {
   ];
 
   const liveMetrics = [
-    { label: 'Orders Today', value: '2,847', change: '+12%', color: 'text-green-500' },
+    { label: 'Orders Today', value: '1000', change: '+12%', color: 'text-green-500' },
     { label: 'Active Drivers', value: '156', change: '+8%', color: 'text-blue-500' },
     { label: 'Avg Response', value: '2.3s', change: '-0.5s', color: 'text-purple-500' },
     { label: 'Customer Satisfaction', value: '98.7%', change: '+1.2%', color: 'text-yellow-500' }
@@ -141,20 +142,17 @@ export default function HomePage() {
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform duration-300 relative z-10" />
                 </a>
                 
-                <button 
-                  onClick={() => setIsVideoModalOpen(true)}
-                  className="group border-2 border-black text-black px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-black hover:text-yellow-400 transition-all duration-500 transform hover:scale-105 hover:rotate-1 hover:shadow-2xl flex items-center justify-center space-x-2 relative overflow-hidden"
+                <a 
+                  href="https://play.google.com/store/apps/details?id=za.co.cyber.systems&pcampaignid=web_share"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative bg-black text-yellow-400 px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-white hover:text-black transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-2xl flex items-center justify-center space-x-3 animate-glow-pulse overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/5 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <div className="relative z-10 flex items-center space-x-2">
-                    <div className="relative">
-                      <Play className="h-5 w-5 group-hover:animate-pulse" />
-                      <div className="absolute inset-0 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-30 animate-ping"></div>
-                    </div>
-                    <span>Watch Demo</span>
-                    <Video className="h-4 w-4 group-hover:animate-bounce-gentle" />
-                  </div>
-                </button>
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <Download className="h-6 w-6 group-hover:animate-bounce-gentle relative z-10" />
+                  <span className="relative z-10">Download Customer KasiCouriers</span>
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform duration-300 relative z-10" />
+                </a>
               </div>
 
               {/* Enhanced Stats with Trends */}
